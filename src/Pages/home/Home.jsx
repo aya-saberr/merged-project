@@ -1,61 +1,35 @@
-import React from 'react'
+import { useEffect, useState } from 'react'
 import Hero from '../../components/Hero'
 import Featured from '../../components/Featured.jsx'
-import homeHero from '../../assets/images/container.png'
-import sony from '../../assets/images/sony.png'
-import nothing from '../../assets/images/nothing.png'
-import apple from '../../assets/images/apple.png'
-import google from '../../assets/images/google.png'
+import homeHero from '../../assets/images/Container.png'
 import AudioHero from '../../components/AudioHero'
 import NewArrivals from '../../components/NewArrivals'
-export default function Home() {
+import { productService } from '../../Helpers/productService'
 
-  const products = [
-    {
-      id: 1,
-      brand: 'SONY',
-      name: 'WH-1000XM5 Wireless',
-      price: '$349.00',
-      oldPrice: '$399.00',
-      rating: '4.8',
-      reviews: '284',
-      label: 'BESTSELLER',
-      image: sony
-    },
-    {
-      id: 2,
-      brand: 'NOTHING',
-      name: 'Ear (2) True Wireless',
-      price: '$129.00',
-      oldPrice: '',
-      rating: '4.6',
-      reviews: '156',
-      label: 'NEW',
-      image: nothing
-    },
-    {
-      id: 3,
-      brand: 'APPLE',
-      name: 'Watch Series 9 GPS',
-      price: '$399.00',
-      oldPrice: '$429.00',
-      rating: '4.9',
-      reviews: '421',
-      label: 'STAFF PICK',
-      image: apple
-    },
-    {
-      id: 4,
-      brand: 'GOOGLE',
-      name: 'Pixel 8 Pro 256GB',
-      price: '$799.00',
-      oldPrice: '$899.00',
-      rating: '4.7',
-      reviews: '312',
-      label: 'SAVE $100',
-      image: google
+export default function Home() {
+  const [products, setProducts] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+
+  useEffect(() => {
+    const controller = new AbortController()
+
+    const loadProducts = async () => {
+      try {
+        const fetchedProducts = await productService.getAllProducts(controller.signal)
+        setProducts(fetchedProducts.slice(0, 4))
+      } catch (requestError) {
+        if (controller.signal.aborted) return
+        setError(requestError.message)
+      } finally {
+        if (!controller.signal.aborted) setLoading(false)
+      }
     }
-  ]
+
+    loadProducts()
+
+    return () => controller.abort()
+  }, [])
 
   return (
     <>
@@ -78,17 +52,17 @@ export default function Home() {
         secondBtn={true}
         secondBtnContent="Browse categories"
       />
-            <div className="bg-[#F6F3EC] min-h-[1100px]" />
-
+      <div className="bg-[#F6F3EC] min-h-[1100px]" />
 
       <Featured
         products={products}
+        loading={loading}
+        error={error}
         title="FEATURED NOW"
         desc="Good design, useful features, fair value. These are the products earning a place in our edit."
       />
       <AudioHero />
       <NewArrivals />
-      
     </>
   )
 }

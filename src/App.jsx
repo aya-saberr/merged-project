@@ -1,33 +1,24 @@
-
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import Layout from './Components/layout/Layout' 
-import Home from './pages/home/Home'
+import Layout from './components/layout/Layout'
+import Home from './Pages/home/Home'
 import ProductsPage from './Pages/ProductsPage'
+import ProductDetailsPage from './Pages/ProductDetailsPage'
 import Deals from './Pages/deals/Deals'
-import Categories from './Pages/categories/Categories' 
-
-
-
-const Cart = () => <div className="p-10 font-heading text-3xl">Cart Page (Coming Soon)</div>
-const Details = () => <div className="p-10 font-heading text-3xl">Product Details (Coming Soon)</div>
-
+import Categories from './Pages/categories/Categories'
+import CartPage from './Pages/CartPage'
 
 export default function App() {
   return (
     <BrowserRouter>
-
       <Routes>
         <Route path="/" element={<Layout />}>
-
-        <Route path="/" element={<Home />} />
-        <Route path="/products" element={<ProductsPage />} />
-        <Route path="/deals" element={<Deals />} />
-        <Route path="/categories" element={<Categories />} />
-        <Route path="/products/:id" element={<Details />} />
-        <Route path="/cart" element={<Cart />} />
-
-</Route>
-
+          <Route path="/" element={<Home />} />
+          <Route path="/products" element={<ProductsPage />} />
+          <Route path="/deals" element={<Deals />} />
+          <Route path="/categories" element={<Categories />} />
+          <Route path="/products/:id" element={<ProductDetailsPage />} />
+          <Route path="/cart" element={<CartPage />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   )
